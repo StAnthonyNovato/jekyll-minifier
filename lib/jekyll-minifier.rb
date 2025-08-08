@@ -84,27 +84,30 @@ module Jekyll
 
     def output_js(path, content)
       if ( ENV['JEKYLL_ENV'] == "production" )
-        js_args  = {}
-        opts     = @site.config['jekyll-minifier']
-        compress = true
-        if ( !opts.nil? )
-          compress                = opts['compress_javascript']                           if opts.has_key?('compress_javascript')
-          js_args[:uglifier_args] = Hash[opts['uglifier_args'].map{|(k,v)| [k.to_sym,v]}] if opts.has_key?('uglifier_args')
-        end
+      js_args  = {}
+      opts     = @site.config['jekyll-minifier']
+      compress = true
+      if ( !opts.nil? )
+        compress                = opts['compress_javascript']                           if opts.has_key?('compress_javascript')
+        js_args[:uglifier_args] = Hash[opts['uglifier_args'].map{|(k,v)| [k.to_sym,v]}] if opts.has_key?('uglifier_args')
+      end
 
-        if ( compress )
-          if ( !js_args[:uglifier_args].nil? )
-            compressor = Uglifier.new(js_args[:uglifier_args])
-          else
-            compressor = Uglifier.new()
-          end
-
-          output_file(path, compressor.compile(content))
+      if ( compress )
+        Jekyll.logger.info "Uglifier", "Compressing #{path} with Uglifier"
+        if ( !js_args[:uglifier_args].nil? )
+        compressor = Uglifier.new(js_args[:uglifier_args])
         else
-          output_file(path, content)
+        compressor = Uglifier.new()
         end
+
+        compiled = compressor.compile_with_map(content)
+        output_file(path, compiled[0])
+        output_file("#{path}.map", compiled[1])
       else
         output_file(path, content)
+      end
+      else
+      output_file(path, content)
       end
     end
 
