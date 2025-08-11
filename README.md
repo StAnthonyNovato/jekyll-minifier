@@ -1,4 +1,7 @@
-# jekyll-minifier [![Build Status](https://travis-ci.org/digitalsparky/jekyll-minifier.svg?branch=master)](https://travis-ci.org/digitalsparky/jekyll-minifier) [![Gem Version](https://badge.fury.io/rb/jekyll-minifier.svg)](http://badge.fury.io/rb/jekyll-minifier)
+# jekyll-minified (StAnthonyNovato fork)
+
+## Forked Version
+This is a fork; it includes the functionality for sourcemaps.
 
 Requires Ruby 2.3+
 
@@ -8,18 +11,18 @@ This was created due to the previous minifier (jekyll-press) not being CSS3 comp
 
 Note: this is my first ever gem, I'm learning, so feedback is much appreciated.
 
-** This minifier now only runs when JEKYLL_ENV="production" is set in the environment **
+## Installation
+Because this is a fork, it's not on RubyGems... you'll be adding it to your Gemfile like this:
 
-Easy to use, just install the jekyll-minifier gem:
+```ruby
+gem 'jekyll-minifier', git: 'https://github.com/StAnthonyNovato/jekyll-minifier.git'
+```
 
-<pre><code>gem install jekyll-minifier</code></pre>
+Then run `bundle install`.
 
-Then add this to your \_config.yml:
+Badda boom, badda bing.
 
-<pre><code>plugins:
-    - jekyll-minifier
-</code></pre>
-
+## Options
 Optionally, you can also add exclusions using:
 
 <pre><code>jekyll-minifier:
@@ -67,11 +70,3 @@ jekyll-minifier:
     harmony: true
 
 </code></pre>
-
-
-# Like my stuff?
-
-Would you like to buy me a coffee or send me a tip?
-While it's not expected, I would really appreciate it.
-
-[![Paypal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/MattSpurrier) <a href="https://www.buymeacoffee.com/digitalsparky" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>

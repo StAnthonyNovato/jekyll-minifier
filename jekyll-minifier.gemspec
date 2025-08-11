@@ -2,16 +2,17 @@
 require File.expand_path('../lib/jekyll-minifier/version', __FILE__)
 
 Gem::Specification.new do |gem|
+  puts "Creating gemspec for jekyll-minifier version #{Jekyll::Minifier::VERSION}"
   gem.specification_version = 2 if gem.respond_to? :specification_version=
   gem.required_rubygems_version = Gem::Requirement.new('>= 0') if gem.respond_to? :required_rubygems_version=
   gem.rubygems_version = '2.3.1'
   gem.required_ruby_version = '>= 2.3.0'
 
-  gem.authors     = ["DigitalSparky"]
-  gem.email       = ["matthew@spurrier.com.au"]
+  gem.authors     = ["DigitalSparky", "Damien Boisvert"]
+  gem.email       = ["damien@alphagame.dev"] # Changed - to prevent problems being erroneously sent to the original author
   gem.description = %q{Jekyll Minifier using htmlcompressor for html, uglifier for js and css}
-  gem.summary     = %q{Jekyll Minifier for html, css, and javascript}
-  gem.homepage    = "http://github.com/digitalsparky/jekyll-minifier"
+  gem.summary     = %q{Jekyll Minifier for html, css, and javascript - St. Anthony Novato fork}
+  gem.homepage    = "http://github.com/StAnthonyNovato/jekyll-minifier"
   gem.license     = "GPL-3.0"
 
   gem.files         = `git ls-files`.split($\)
