@@ -83,31 +83,42 @@ module Jekyll
     end
 
     def output_js(path, content)
-      if ( ENV['JEKYLL_ENV'] == "production" )
-      js_args  = {}
-      opts     = @site.config['jekyll-minifier']
-      compress = true
-      if ( !opts.nil? )
-        compress                = opts['compress_javascript']                           if opts.has_key?('compress_javascript')
-        js_args[:uglifier_args] = Hash[opts['uglifier_args'].map{|(k,v)| [k.to_sym,v]}] if opts.has_key?('uglifier_args')
-      end
-
-      if ( compress )
-        Jekyll.logger.info "Uglifier", "Compressing #{path} with Uglifier"
-        if ( !js_args[:uglifier_args].nil? )
-        compressor = Uglifier.new(js_args[:uglifier_args])
-        else
-        compressor = Uglifier.new()
+      if ENV['JEKYLL_ENV'] == "production"
+        js_args  = {}
+        opts     = @site.config['jekyll-minifier']
+        compress = true
+        if !opts.nil?
+          compress                = opts['compress_javascript']                           if opts.has_key?('compress_javascript')
+          js_args[:uglifier_args] = Hash[opts['uglifier_args'].map { |(k, v)| [k.to_sym, v] }] if opts.has_key?('uglifier_args')
         end
 
-        compiled = compressor.compile_with_map(content)
-        output_file(path, compiled[0])
-        output_file("#{path}.map", compiled[1])
+        # Add source map options here
+        if compress
+          original_size = content.bytesize
+          source_map_opts = {
+            source_map: {
+              filename: File.basename(path),              # Filename of the input file
+              output_filename: File.basename("#{path}"),  # Output filename
+              root: "/assets/js/",                                 # Root directory (adjust as needed)
+            }
+          }
+          # Merge user-provided options with source map options
+          uglifier_options = js_args[:uglifier_args] || {}
+          uglifier_options = uglifier_options.merge(source_map_opts)
+
+          compressor = Uglifier.new(uglifier_options)
+          compiled = compressor.compile_with_map(content)
+          minified_size = compiled[0].bytesize
+          percentage = (minified_size.to_f / original_size * 100).round(2)
+          relative_path = path.gsub(@site.dest + '/', '')
+          output_file("#{path}.map", compiled[1])
+          output_file(path, "#{compiled[0]}\n//# sourceMappingURL=#{File.basename(path)}.map")
+          Jekyll.logger.info "Uglifier", "Minified #{relative_path} (#{percentage}% of original size, #{original_size} → #{minified_size} bytes)"
+        else
+          output_file(path, content)
+        end
       else
         output_file(path, content)
-      end
-      else
-      output_file(path, content)
       end
     end
 
