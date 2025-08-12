@@ -76,7 +76,13 @@ module Jekyll
         end
 
         compressor = HtmlCompressor::Compressor.new(html_args)
-        output_file(path, compressor.compress(content))
+        compressed_content = compressor.compress(content)
+        original_size = content.bytesize
+        compressed_size = compressed_content.bytesize
+        percentage = (compressed_size.to_f / original_size * 100).round(2)
+        relative_path = path.gsub(@site.dest + '/', '')
+        output_file(path, compressed_content)
+        Jekyll.logger.debug "HTML Compressor", "Minified #{relative_path} (#{percentage}% of original size, #{original_size} → #{compressed_size} bytes)"
       else
         output_file(path, content)
       end
@@ -113,7 +119,7 @@ module Jekyll
           relative_path = path.gsub(@site.dest + '/', '')
           output_file("#{path}.map", compiled[1])
           output_file(path, "#{compiled[0]}\n//# sourceMappingURL=#{File.basename(path)}.map")
-          Jekyll.logger.info "Uglifier", "Minified #{relative_path} (#{percentage}% of original size, #{original_size} → #{minified_size} bytes)"
+          Jekyll.logger.debug "Uglifier", "Minified #{relative_path} (#{percentage}% of original size, #{original_size} → #{minified_size} bytes)"
         else
           output_file(path, content)
         end
@@ -131,7 +137,13 @@ module Jekyll
         end
 
         if ( compress )
-          output_file(path, JSON.minify(content))
+          original_size = content.bytesize
+          minified_content = JSON.minify(content)
+          minified_size = minified_content.bytesize
+          percentage = (minified_size.to_f / original_size * 100).round(2)
+          relative_path = path.gsub(@site.dest + '/', '')
+          output_file(path, minified_content)
+          Jekyll.logger.debug "JSON Minifier", "Minified #{relative_path} (#{percentage}% of original size, #{original_size} → #{minified_size} bytes)"
         else
           output_file(path, content)
         end
@@ -148,8 +160,14 @@ module Jekyll
           compress    = opts['compress_css']               if opts.has_key?('compress_css')
         end
         if ( compress )
+          original_size = content.bytesize
           compressor = CSSminify2.new()
-          output_file(path, compressor.compress(content))
+          minified_content = compressor.compress(content)
+          minified_size = minified_content.bytesize
+          percentage = (minified_size.to_f / original_size * 100).round(2)
+          relative_path = path.gsub(@site.dest + '/', '')
+          output_file(path, minified_content)
+          Jekyll.logger.debug "CSS Minifier", "Minified #{relative_path} (#{percentage}% of original size, #{original_size} → #{minified_size} bytes)"
         else
           output_file(path, content)
         end
