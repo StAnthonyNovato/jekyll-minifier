@@ -1,4 +1,4 @@
-# jekyll-minified (StAnthonyNovato fork)
+# jekyll-minifier (StAnthonyNovato fork)
 
 ## Forked Version
 This is a fork; it includes the functionality for sourcemaps.
